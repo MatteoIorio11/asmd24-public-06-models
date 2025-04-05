@@ -36,20 +36,21 @@ object SystemAnalysis:
       (1 to depth).to(LazyList) flatMap (paths(s, _)) filter (complete(_))
 
   /**
-   * Check if the firstCriticalSection and the secondCriticalSection does not happen at the same time
+   * Check if there is an intersection between all the input critical sections
    * @param sequences: all the paths explored
-   * @param firstCriticalSection: first critical state
-   * @param secondCriticalSection: second critical state
    * @tparam S: type of the state
    * @return true if the firstCriticalSection and the secondCriticalSection does not happen at the same time
    */
-  def isSafe[S](sequences: Seq[Path[S]], firstCriticalSection: S, secondCriticalSection: S): Boolean =
-    val readers = scala.collection.mutable.TreeSet[Int]()
-    val writers = scala.collection.mutable.TreeSet[Int]()
+  def isSafe[S](sequences: Seq[Path[S]], criticalSections: Set[S]): Boolean =
+    import scala.util.boundary, boundary.break
+    val intervals = scala.collection.mutable.HashMap[S, Set[Int]]()
     for path <- sequences do
       for i <- path.indices do
-        if path(i) == firstCriticalSection then
-          readers.add(i)
-        else if path(i) == secondCriticalSection then
-          writers.add(i)
-    !readers.exists(i => writers.contains(i))
+        intervals.put(path(i), intervals.getOrElse(path(i), Set()) + i)
+    boundary:
+      for section <- criticalSections do
+        val notSafe = intervals.filter(entry => criticalSections.contains(entry._1) && !entry._1.equals(section))
+          .flatMap(entry => entry._2)
+          .exists(time => intervals(section).contains(time))
+        if notSafe then break(false)
+      true
