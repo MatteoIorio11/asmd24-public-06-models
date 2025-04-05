@@ -3,6 +3,7 @@ package scala.u06.modelling
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers.*
+import u06.modelling.SystemAnalysis
 
 class TestReadersWriters extends AnyFunSuite:
   import u06.examples.PNReadersAndWrites.*
@@ -34,3 +35,11 @@ class TestReadersWriters extends AnyFunSuite:
     val expected1 = List(MSet(P4), MSet(P7))
     readersAndWriters.paths(MSet(P4), 2).toSet should be:
       Set(expected1)
+
+  test("When there is a critical section, and we check if all the paths are safe It should return false"):
+    val sequences: Seq[List[Place]] = Seq(
+      List(P1, P2, P3, P5, P6), // t1 -> t2 -> t4 -> t6
+      List(P1, P2, P3, P5, P7), // t1 -> t2 -> t4 -> t5
+    )
+    SystemAnalysis.isSafe(sequences, P6, P7) should be:
+      false
