@@ -28,7 +28,7 @@ object PNReadersAndWrites:
 
   ).toSystem
 
-  def readersAndWritesV2 = PetriNet[Place](
+  def readersAndWritesWithPriority = PetriNet[Place](
     MSet(P1) ~~> MSet(P2),                  // t1: Process starts
     MSet(P2) ~~> MSet(P3),                  // t2: Process decides to read
     MSet(P2) ~~> MSet(P4),                  // t3: Process decides to write
@@ -46,4 +46,4 @@ object PNReadersAndWrites:
 @main def mainReadersAndWriters =
   import PNReadersAndWrites.*
   println(readersAndWriters.paths(MSet(P1), 7).toList.mkString("\n"))
-  println(readersAndWritesV2.paths(MSet(P1), 7).toList.mkString("\n"))
+  println(readersAndWritesWithPriority.paths(MSet(P1), 7).toList.mkString("\n"))
