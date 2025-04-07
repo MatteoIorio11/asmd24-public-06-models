@@ -24,16 +24,21 @@ object SystemAnalysis:
         yield path :+ next
 
     // same depth and same start and end of queue, same path
-    def explore(start: S, depth: Int):Seq[Path[S]] =
-      val deque = scala.collection.mutable.ArrayDeque[(Int, S, S)]()
-      val cache = scala.collection.mutable.HashMap[(Int, S, S), Seq[Path[S]]]()
-      Seq()
-
-
+    def pathWithCache(start: S, depth: Int):Seq[Path[S]] =
+      lazy val cache = scala.collection.mutable.HashMap[(S, Int), Seq[Path[S]]]()
+      if cache contains (start, depth) then
+        return cache((start, depth))
+      else
+        val allPaths = paths(start, depth)
+        cache.put((start, depth), allPaths)
+        return allPaths
 
     // complete paths with length '<= depth' (could be optimised)
     def completePathsUpToDepth(s: S, depth:Int): Seq[Path[S]] =
-      (1 to depth).to(LazyList) flatMap (paths(s, _)) filter (complete(_))
+      (1 to depth).to(LazyList) flatMap (paths(s, _)) filter complete
+
+    def completePathsUpToDepthWithCache(s: S, depth:Int): Seq[Path[S]] =
+      (1 to depth).to(LazyList) flatMap (pathWithCache(s, _)) filter complete
 
   /**
    * Check if there is an intersection between all the input critical sections
