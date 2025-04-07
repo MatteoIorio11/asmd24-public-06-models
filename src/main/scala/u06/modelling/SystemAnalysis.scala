@@ -23,22 +23,22 @@ object SystemAnalysis:
           next <- system.next(path.last)
         yield path :+ next
 
-    // same depth and same start and end of queue, same path
-    def pathWithCache(start: S, depth: Int):Seq[Path[S]] =
-      lazy val cache = scala.collection.mutable.HashMap[(S, Int), Seq[Path[S]]]()
-      if cache contains (start, depth) then
-        return cache((start, depth))
-      else
-        val allPaths = paths(start, depth)
-        cache.put((start, depth), allPaths)
-        return allPaths
-
     // complete paths with length '<= depth' (could be optimised)
     def completePathsUpToDepth(s: S, depth:Int): Seq[Path[S]] =
       (1 to depth).to(LazyList) flatMap (paths(s, _)) filter complete
 
     def completePathsUpToDepthWithCache(s: S, depth:Int): Seq[Path[S]] =
-      (1 to depth).to(LazyList) flatMap (pathWithCache(s, _)) filter complete
+      lazy val cache = scala.collection.mutable.HashMap[(S, Int), Seq[Path[S]]]()
+      (1 to depth).to(LazyList) flatMap(d => {
+        if (cache contains (s, d)) then {
+          // cache hit
+          cache((s, d))
+        }
+        else
+          val allPaths = paths(s, d)
+          cache.put((s, d), allPaths)
+          allPaths
+      }) filter complete
 
   /**
    * Check if there is an intersection between all the input critical sections
