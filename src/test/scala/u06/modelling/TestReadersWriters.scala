@@ -31,6 +31,11 @@ class TestReadersWriters extends AnyFunSuite:
     readersAndWriters.paths(MSet(P6), 2).toSet should be:
       Set(expected1)
 
+  test("In the new version of RW if there is a reader, It will always read"):
+    for i <- 1 to 100 do
+      val paths = readersAndWritesWithPriority.paths(MSet(P5, P3, P4), 2).toList
+      paths.last.last shouldBe MSet(P5, P6, P4)
+
   test("When the computation starts from P4 and the length is 2, the the node can only go to P7"):
     val expected1 = List(MSet(P4), MSet(P7))
     readersAndWriters.paths(MSet(P4), 2).toSet should be:
