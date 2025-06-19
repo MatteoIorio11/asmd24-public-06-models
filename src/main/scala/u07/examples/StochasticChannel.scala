@@ -2,6 +2,7 @@ package u07.examples
 
 import u07.modelling.CTMC
 
+import java.util.Random
 import scala.u07.examples.ExtractorBuilder
 
 object StochasticChannel:
@@ -20,17 +21,20 @@ object StochasticChannel:
     Transition(DONE,1.0 --> DONE)
   )
 
-// 1) Compute the average time at which communication is done—across n runs
-// Compute the relative amount of time (0 % to 100 %) that the system is in fail state until communication is done—across n runs
-
   def tracesApi[X](trace: Seq[Trace[State]], function: Seq[Trace[State]] => X): X =
     function(trace)
 
-  def meanDone(trace: Seq[Trace[State]]): Double =
+  /**
+   * <<SIMULATOR>>
+   * Take the communication channel CTMC example in StochasticChannelSimulation. Compute the average time at which
+   * communication is done—across n runs. Compute the relative amount of time (0% to 100%) that the system is in fail state until
+   * communication is done—across n runs. Extract an API for nicely performing similar checks.
+   */
+  def meanDone(trace: Seq[Event[State]]): Double =
     val totalDone: Double = ExtractorBuilder(trace)
-      .applyPredicate(trace => trace.last == DONE)
-      .applyFunctionAndOperator(trace => trace.last.time, (i1, i2) => i1 + i2)
-    totalDone / trace.size
+      .applyCount(trace => trace.state == DONE)
+    val totalStates: Double = ExtractorBuilder(trace).applyCount(tr => true)
+    (totalDone / totalStates) * 100
 //    tracesApi(trace, f=> trace.filter(seq => seq.last.state == DONE).map(seq => seq.last.time).sum / trace.size)
 
   def meanFailToDone(trace: Seq[Trace[State]]): Double =
@@ -44,3 +48,8 @@ object StochasticChannel:
 @main def mainStochasticChannel() =  // example run
   import StochasticChannel.*
   State.values.foreach(s => println(s"$s,${stocChannel.transitions(s)}"))
+  (1 to 10).map(_ => stocChannel.newSimulationTrace(IDLE, Random()).take(10).toList)
+    .foreach(trace => {
+      println(trace.mkString("\n"))
+      print(meanDone(trace))
+    })
