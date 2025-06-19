@@ -27,9 +27,10 @@ object StochasticChannel:
     function(trace)
 
   def meanDone(trace: Seq[Trace[State]]): Double =
-    ExtractorBuilder(trace)
+    val totalDone: Double = ExtractorBuilder(trace)
       .applyPredicate(trace => trace.last == DONE)
       .applyFunctionAndOperator(trace => trace.last.time, (i1, i2) => i1 + i2)
+    totalDone / trace.size
 //    tracesApi(trace, f=> trace.filter(seq => seq.last.state == DONE).map(seq => seq.last.time).sum / trace.size)
 
   def meanFailToDone(trace: Seq[Trace[State]]): Double =
