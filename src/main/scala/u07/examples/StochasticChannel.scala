@@ -3,7 +3,7 @@ package u07.examples
 import u07.modelling.CTMC
 
 import java.util.Random
-import scala.u07.examples.ExtractorBuilder
+import scala.u07.examples.TracesLogic
 
 object StochasticChannel:
   enum State:
@@ -30,26 +30,33 @@ object StochasticChannel:
    * communication is done—across n runs. Compute the relative amount of time (0% to 100%) that the system is in fail state until
    * communication is done—across n runs. Extract an API for nicely performing similar checks.
    */
-  def meanDone(trace: Seq[Event[State]]): Double =
-    val totalDone: Double = ExtractorBuilder(trace)
-      .applyCount(trace => trace.state == DONE)
-    val totalStates: Double = ExtractorBuilder(trace).applyCount(tr => true)
-    (totalDone / totalStates) * 100
-//    tracesApi(trace, f=> trace.filter(seq => seq.last.state == DONE).map(seq => seq.last.time).sum / trace.size)
+  def meanDone(traces: Seq[Trace[State]]): Double =
+    traces.size match
+      case 0 => 0
+      case x: Int =>
+        var meanOfAllDone: Double = 0
+          for (trace <- traces)
+            meanOfAllDone += TracesLogic(trace).meanForState(t => t.state == DONE)
+        meanOfAllDone / x
 
-  def meanFailToDone(trace: Seq[Trace[State]]): Double =
-    val totalFail = ExtractorBuilder(trace).applyCount(trace => trace.contains(FAIL))
-    val failToDone = ExtractorBuilder(trace).applyCount(trace => trace.contains(FAIL) && trace.last.state == DONE)
-    if totalFail > 0 then
-      failToDone / totalFail
-    else
-      0
+  def meanFailToDone(traces: Seq[Trace[State]]): Double =
+    traces.size match
+      case 0 => 0
+      case totalSize =>
+        var failToDone: Double = 0
+        for (trace <- traces)
+          failToDone = failToDone + (if (trace.count(t => t.state == FAIL) > 0 && trace.last.state == DONE) 1 else 0)
+        failToDone / totalSize
 
 @main def mainStochasticChannel() =  // example run
   import StochasticChannel.*
+  var traces:Seq[Trace[State]] = List()
   State.values.foreach(s => println(s"$s,${stocChannel.transitions(s)}"))
-  (1 to 10).map(_ => stocChannel.newSimulationTrace(IDLE, Random()).take(10).toList)
+  (1 to 10).map(_ => stocChannel.newSimulationTrace(IDLE, Random()).take(10))
     .foreach(trace => {
+      val lazyTrace = LazyList().appendedAll(trace)
+      traces = traces :+ trace
       println(trace.mkString("\n"))
-      print(meanDone(trace))
     })
+  println("Mean of Done: " + meanDone(traces))
+  println("Mean of Fail to Done: " + meanFailToDone(traces))
