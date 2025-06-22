@@ -37,7 +37,7 @@ object StochasticChannel:
         var meanOfAllDone: Double = 0
           for (trace <- traces)
             meanOfAllDone += TracesLogic(trace).meanForState(t => t.state == DONE)
-        meanOfAllDone / x
+        (meanOfAllDone / x) * 100
 
   def meanFailToDone(traces: Seq[Trace[State]]): Double =
     traces.size match
@@ -46,7 +46,7 @@ object StochasticChannel:
         var failToDone: Double = 0
         for (trace <- traces)
           failToDone = failToDone + (if (trace.count(t => t.state == FAIL) > 0 && trace.last.state == DONE) 1 else 0)
-        failToDone / totalSize
+        (failToDone / totalSize) * 100
 
 @main def mainStochasticChannel() =  // example run
   import StochasticChannel.*
@@ -58,5 +58,5 @@ object StochasticChannel:
       traces = traces :+ trace
       println(trace.mkString("\n"))
     })
-  println("Mean of Done: " + meanDone(traces))
-  println("Mean of Fail to Done: " + meanFailToDone(traces))
+  println("Mean of Done: " + meanDone(traces) + "%")
+  println("Mean of Fail to Done: " + meanFailToDone(traces) + "%")
