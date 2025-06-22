@@ -27,6 +27,10 @@ object SystemAnalysis:
     def completePathsUpToDepth(s: S, depth:Int): Seq[Path[S]] =
       (1 to depth).to(LazyList) flatMap (paths(s, _)) filter complete
 
+    /**
+     * <<TOOLING>>
+     * The current API might be re-organised: can we generate/navigate all paths (even with loops) thanks to caching and lazy evaluation?
+     */
     def completePathsUpToDepthWithCache(s: S, depth:Int): Seq[Path[S]] =
       lazy val cache = scala.collection.mutable.HashMap[(S, Int), Seq[Path[S]]]()
       (1 to depth).to(LazyList) flatMap(d => {
