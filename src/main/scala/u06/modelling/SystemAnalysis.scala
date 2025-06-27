@@ -45,7 +45,8 @@ object SystemAnalysis:
       }) filter complete
 
   /**
-   * Check if there is an intersection between all the input critical sections
+   * <<VERIFIER>> Partial implementation of the overall task, inside this code there is the logic for checking
+   * if there is an intersection between all the input critical sections
    * @param sequences: all the paths explored
    * @tparam S: type of the state
    * @return true if the firstCriticalSection and the secondCriticalSection does not happen at the same time
