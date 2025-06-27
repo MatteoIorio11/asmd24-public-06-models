@@ -4,11 +4,10 @@ import u07.examples.StochasticChannel.State
 import u07.modelling.CTMCSimulation.Trace
 
 class TracesLogic[X](private val traces: Seq[X]):
-  private var buffer = List().appendedAll(traces)
+  private val buffer = List().appendedAll(traces)
 
   def applyPredicate(predicate: X => Boolean): TracesLogic[X] =
-    buffer = buffer.filter(trace => predicate(trace))
-    this
+    TracesLogic(buffer.filter(trace => predicate(trace)))
 
   def applyCount(predicate: X => Boolean): Int =
     buffer.count(trace => predicate(trace))
