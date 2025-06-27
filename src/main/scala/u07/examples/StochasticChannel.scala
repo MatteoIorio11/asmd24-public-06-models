@@ -36,7 +36,7 @@ object StochasticChannel:
       case x: Int =>
         var meanOfAllDone: Double = 0
           for (trace <- traces)
-            meanOfAllDone += TracesLogic(trace).meanForState(t => t.state == DONE)
+            meanOfAllDone += TracesLogic(trace).meanForValue(t => t.state == DONE)
         (meanOfAllDone / x) * 100
 
   def meanFailToDone(traces: Seq[Trace[State]]): Double =
