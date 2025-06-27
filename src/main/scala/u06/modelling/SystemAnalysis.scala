@@ -2,6 +2,8 @@ package u06.modelling
 
 import u06.examples.PNReadersAndWrites
 
+import scala.u06.modelling.CachePaths.LRUCacheImpl
+
 // Basical analysis helpers
 object SystemAnalysis:
 
@@ -43,6 +45,11 @@ object SystemAnalysis:
           cache.put((s, d), allPaths)
           allPaths
       }) filter complete
+
+
+    def completePathsUpToDepthLRU(s: S, depth: Int): Seq[Path[S]] =
+      lazy val lru = LRUCacheImpl[S]()
+      lru.execute(s, depth, paths, complete)
 
   /**
    * <<VERIFIER>> Partial implementation of the overall task, inside this code there is the logic for checking
