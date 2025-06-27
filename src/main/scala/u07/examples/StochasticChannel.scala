@@ -48,7 +48,7 @@ object StochasticChannel:
           failToDone = failToDone + (if (trace.count(t => t.state == FAIL) > 0 && trace.last.state == DONE) 1 else 0)
         (failToDone / totalSize) * 100
 
-@main def mainStochasticChannel() =  // example run
+@main def mainStochasticChannel(): Unit =  // example run
   import StochasticChannel.*
   var traces:Seq[Trace[State]] = List()
   State.values.foreach(s => println(s"$s,${stocChannel.transitions(s)}"))
