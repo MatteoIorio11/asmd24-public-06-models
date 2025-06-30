@@ -24,3 +24,11 @@ object CTMCExperiment:
       (0 until runs).count: _ =>
         bounded(timeBound)(prop)(self.newSimulationTrace(s0 ,rnd))
       .toDouble/runs
+
+    /**
+     * <<PRISM-VS-SCALA>>
+     * Write Scala support for performing additional experiments and comparisons (e.g., G
+     * formulas, steady-state computations)
+     */
+    def steadyState[A](filt: A => Boolean, time: Double => Boolean): Property[A] =
+      trace => trace exists(e => filt(e.state) && time(e.time))
