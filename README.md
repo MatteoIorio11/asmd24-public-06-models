@@ -20,4 +20,4 @@ communication is done—across n runs. Extract an API for nicely performing simi
 
 The code can be found here:
 * StochasticChannel.scala
-* TracesLogic.scala
+* SimulationApi.scala
