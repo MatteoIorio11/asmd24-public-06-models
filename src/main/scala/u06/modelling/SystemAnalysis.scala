@@ -33,6 +33,7 @@ object SystemAnalysis:
      * <<TOOLING>>
      * The current API might be re-organised: can we generate/navigate all paths (even with loops) thanks to caching and lazy evaluation?
      */
+    /*
     def completePathsUpToDepthWithCache(s: S, depth:Int): Seq[Path[S]] =
       lazy val cache = scala.collection.mutable.HashMap[(S, Int), Seq[Path[S]]]()
       (1 to depth).to(LazyList) flatMap(d => {
@@ -45,9 +46,9 @@ object SystemAnalysis:
           cache.put((s, d), allPaths)
           allPaths
       }) filter complete
+    */
 
-
-    def completePathsUpToDepthLRU(s: S, depth: Int): Seq[Path[S]] =
+    def completePathsUpToDepthWithCache(s: S, depth: Int): Seq[Path[S]] =
       lazy val lru = LRUCacheImpl[S]()
       lru.execute(s, depth, paths, complete)
 
