@@ -31,3 +31,6 @@ class SimulationApiSpec extends AnyFunSuite:
 
   test("Simulation Operation should correctly map the traces into newer trace"):
     val operationApi = new SimulationBufferImpl(simulations) with SimulationOperation[State]
+    val mappedTraces = operationApi.applyFunction(trace => LazyList(trace.last))
+    mappedTraces.simulations.forall(trace => trace.size == 1) should be (true)
+
