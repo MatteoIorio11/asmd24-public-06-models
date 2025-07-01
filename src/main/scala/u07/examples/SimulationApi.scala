@@ -33,3 +33,7 @@ object SimulationApi:
       case 0 => 0
       case x =>
         applyCount(predicate) / x.toDouble
+
+
+  case class SimulationBufferImpl[S](override val simulations: Simulations[S]) extends SimulationBuffer[S]:
+    override def size: Int = simulations.size
