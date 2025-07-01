@@ -34,3 +34,9 @@ class SimulationApiSpec extends AnyFunSuite:
     val mappedTraces = operationApi.applyFunction(trace => LazyList(trace.last))
     mappedTraces.simulations.forall(trace => trace.size == 1) should be (true)
 
+  test("Simulation Operation should correctly take N traces"):
+    val N = 1
+    val operationApi = new SimulationBufferImpl(simulations) with SimulationOperation[State]
+    val firstN = operationApi.applyTakeFirstN(N)
+    firstN.size == N
+
