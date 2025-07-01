@@ -3,7 +3,7 @@ package scala.u07.modelling
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers.be
 import org.scalatest.matchers.should.Matchers.should
-import u07.examples.StochasticChannel.State.{DONE, IDLE}
+import u07.examples.StochasticChannel.State.{DONE, FAIL, IDLE}
 import u07.examples.StochasticChannel.{State, stocChannel}
 import u07.modelling.CTMCSimulation.Trace
 
@@ -28,6 +28,11 @@ class SimulationApiSpec extends AnyFunSuite:
     val predicateApis = new SimulationBufferImpl(simulations) with SimulationFilter[State]
     val countIdle = predicateApis.applyCount(trace => trace.exists(s => s.state == IDLE))
     countIdle == predicateApis.size
+
+  test("Simulation Filter should correctly take all the traces until a specific state"):
+    val predicateApis = new SimulationBufferImpl(simulations) with SimulationFilter[State]
+    val withoutFail = predicateApis.applyTakeUntil(trace => trace.exists(s => s.state == FAIL))
+    withoutFail.simulations.forall(trace => !trace.exists(s => s.state == FAIL)) should be (true)
 
   test("Simulation Operation should correctly map the traces into newer trace"):
     val operationApi = new SimulationBufferImpl(simulations) with SimulationOperation[State]
