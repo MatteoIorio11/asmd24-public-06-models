@@ -21,3 +21,14 @@ communication is done—across n runs. Extract an API for nicely performing simi
 The code can be found here:
 * StochasticChannel.scala
 * SimulationApi.scala
+
+## RANDOM-UNIT-TESTER
+Task:
+
+How do we unit-test with randomness? And how we test at all with randomness? Think about this in general. Try to create a
+repeatable unit test for Statistics as in utils.StochasticSpec.
+
+The code can be found here:
+* Stochastics.scala
+* StochasticsSpec.scala
+
