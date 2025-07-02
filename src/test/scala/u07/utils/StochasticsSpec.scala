@@ -27,13 +27,9 @@ class StochasticsSpec extends AnyFunSuite with BeforeAndAfter:
         List((1.0,"a"), (3.0,"b"), (6.0,"c"))
 
   test("Choices should correctly draw"):
-    when(myMockRandom.nextDouble()).thenReturn(0.05)
+    when(myMockRandom.nextDouble()).thenReturn(0.05, 0.3, 0.6)
     var map = Stochastics.statistics(choices, 10000)(using myMockRandom)
-    map shouldBe Map("a" -> 10_000)
-    when(myMockRandom.nextDouble()).thenReturn(0.3)
-    map = Stochastics.statistics(choices, 10000)(using myMockRandom)
-    map shouldBe Map("b" -> 10_000)
-    when(myMockRandom.nextDouble()).thenReturn(0.6)
-    map = Stochastics.statistics(choices, 10000)(using myMockRandom)
-    map shouldBe Map("c" -> 10_000)
+    map("a") shouldBe 1
+    map("b") shouldBe 1
+    map("c") shouldBe 9998
 
