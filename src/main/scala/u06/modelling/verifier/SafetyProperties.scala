@@ -13,11 +13,11 @@ object SafetyProperties:
     override def isSafe(s: MSet[T]): Boolean = s(currentState) <= 1
 
   //It is not possible to have readers and writers at the same time.
-  case class RWMutualExclusion[T](private val readers: Set[T], writers: Set[T]) extends MultiSetSafety[T]:
+  case class RWMutualExclusion[T](private val positions: Map[T, Set[T]]) extends MultiSetSafety[T]:
     override def isSafe(s: MSet[T]): Boolean =
-      val readersCount = readers.map(r => s(r)).sum
-      val writersCount = writers.map(w => s(w)).sum
-      !((readersCount > 0 && writersCount > 0) && writersCount >= 1)
+      val first = positions.keys.map(k => s(k)).sum
+      val second = positions.values.flatten.map(w => s(w)).sum
+      !((first > 0 && second > 0) && second >= 1)
 
   //A place has at most maxTokens tokens.
   case class Bounded[T](private val state: T, private val maxTokens: Int) extends MultiSetSafety[T]:

@@ -12,6 +12,6 @@ class BehaviourPropertiesSpec extends AnyFunSuite:
   val initialMarking: MSet[Place] = MSet(P1, P5)
 
   test("Reachability property"):
-    val e = readersAndWriters.safetyProperty(initialMarking, 100)(RWMutualExclusion[Place](Set(P6), Set(P7)))
+    val e = readersAndWriters.safetyProperty(initialMarking, 100)(RWMutualExclusion[Place](Map(P6 -> Set(P7))))
     e shouldBe (true)
 
