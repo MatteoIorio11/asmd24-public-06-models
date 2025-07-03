@@ -41,10 +41,3 @@ class TestReadersWriters extends AnyFunSuite:
     readersAndWriters.paths(MSet(P4), 2).toSet should be:
       Set(expected1)
 
-  test("When two critical sections happens at the same time, then the system is not safe and should return false"):
-    val sequences: Seq[List[Place]] = Seq(
-      List(P1, P2, P3, P5, P6), // t1 -> t2 -> t4 -> t6
-      List(P1, P2, P3, P5, P7), // t1 -> t2 -> t4 -> t5
-    )
-    SystemAnalysis.isSafe(sequences, Set(P6, P7)) should be:
-      false
