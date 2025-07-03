@@ -17,7 +17,6 @@ class SimulationApiSpec extends AnyFunSuite:
 
   private var simulations: Seq[Trace[State]] = (1 to 10).map(_ => stocChannel.newSimulationTrace(IDLE, Random()).take(10))
     .flatMap(trace => LazyList(trace))
-    .toSeq
 
   test ("Simulation Filter should correctly filter all the input traces with a specific filter"):
     val predicateApis = new SimulationBufferImpl(simulations) with SimulationFilter[State]
@@ -32,7 +31,7 @@ class SimulationApiSpec extends AnyFunSuite:
   test("Simulation Filter should correctly take all the traces until a specific state"):
     val predicateApis = new SimulationBufferImpl(simulations) with SimulationFilter[State]
     val withoutFail = predicateApis.applyTakeUntil(trace => trace.exists(s => s.state == FAIL))
-    withoutFail.simulations.forall(trace => !trace.exists(s => s.state == FAIL)) should be (true)
+    withoutFail.simulations.forall(trace => trace.count(s => s.state == FAIL) == 1) should be (true)
 
   test("Simulation Operation should correctly map the traces into newer trace"):
     val operationApi = new SimulationBufferImpl(simulations) with SimulationOperation[State]
