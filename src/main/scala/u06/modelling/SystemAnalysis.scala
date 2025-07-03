@@ -1,8 +1,12 @@
 package u06.modelling
 
 import u06.examples.PNReadersAndWrites
+import u06.utils.MSet
 
 import scala.u06.modelling.CachePaths.LRUCacheImpl
+import scala.u06.modelling.verifier.BehaviourProperties.{CheckBehaviourProperties, Property}
+import scala.u06.modelling.verifier.BehaviourProperties.CheckBehaviourProperties.fairness
+import scala.u06.modelling.verifier.SafetyProperties.Safety
 
 // Basical analysis helpers
 object SystemAnalysis:
@@ -25,6 +29,22 @@ object SystemAnalysis:
           next <- system.next(path.last)
         yield path :+ next
 
+    def bfs(s: S, depth: Int): Set[S] =
+      var seen = Set[S]()
+      var queue = scala.collection.mutable.ArrayDeque(s)
+      var currentDepth = 0
+      while queue.nonEmpty && currentDepth < depth do
+        val nextStates = for
+          state <- queue
+          others <- system.next(state)
+          if !seen.contains(others)
+        yield others
+        seen ++= nextStates
+        queue.appendAll(nextStates)
+        currentDepth += 1
+      seen
+
+
     // complete paths with length '<= depth' (could be optimised)
     def completePathsUpToDepth(s: S, depth:Int): Seq[Path[S]] =
       (1 to depth).to(LazyList) flatMap (paths(s, _)) filter complete
@@ -33,42 +53,14 @@ object SystemAnalysis:
      * <<TOOLING>>
      * The current API might be re-organised: can we generate/navigate all paths (even with loops) thanks to caching and lazy evaluation?
      */
-    /*
-    def completePathsUpToDepthWithCache(s: S, depth:Int): Seq[Path[S]] =
-      lazy val cache = scala.collection.mutable.HashMap[(S, Int), Seq[Path[S]]]()
-      (1 to depth).to(LazyList) flatMap(d => {
-        if (cache contains (s, d)) then {
-          // cache hit
-          cache((s, d))
-        }
-        else
-          val allPaths = paths(s, d)
-          cache.put((s, d), allPaths)
-          allPaths
-      }) filter complete
-    */
-
     def completePathsUpToDepthWithCache(s: S, depth: Int): Seq[Path[S]] =
       lazy val lru = LRUCacheImpl[S]()
       lru.execute(s, depth, paths, complete)
 
-  /**
-   * <<VERIFIER>> Partial implementation of the overall task, inside this code there is the logic for checking
-   * if there is an intersection between all the input critical sections
-   * @param sequences: all the paths explored
-   * @tparam S: type of the state
-   * @return true if the firstCriticalSection and the secondCriticalSection does not happen at the same time
-   */
-  def isSafe[S](sequences: Seq[Path[S]], criticalSections: Set[S]): Boolean =
-    import scala.util.boundary, boundary.break
-    val intervals = scala.collection.mutable.HashMap[S, Set[Int]]()
-    for path <- sequences do
-      for i <- path.indices do
-        intervals.put(path(i), intervals.getOrElse(path(i), Set()) + i)
-    boundary:
-      for section <- criticalSections do
-        val notSafe = intervals.filter(entry => criticalSections.contains(entry._1) && !entry._1.equals(section))
-          .flatMap(entry => entry._2)
-          .exists(time => intervals(section).contains(time))
-        if notSafe then break(false)
-      true
+
+    def safetyProperty(state: S, depth: Int)(safety: Safety[S]): Boolean =
+      bfs(state, depth) forall (path => safety.isSafe(path))
+
+    def behaviourProperty(state: S, depth: Int)(property: Property[S]): Boolean =
+      //      property.isValid(completePathsUpToDepthWithCache(state, depth))
+      false

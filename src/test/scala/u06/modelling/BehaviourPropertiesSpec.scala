@@ -1,0 +1,1 @@
+package scala.u06.modelling object BehaviourPropertiesSpec
