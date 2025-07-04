@@ -1,4 +1,4 @@
-package scala.u06.modelling.verifier
+package u06.modelling.verifier
 
 import u06.utils.MSet
 
@@ -22,3 +22,8 @@ object SafetyProperties:
   //A place has at most maxTokens tokens.
   case class Bounded[T](private val state: T, private val maxTokens: Int) extends MultiSetSafety[T]:
     override def isSafe(s: MSet[T]): Boolean = s(state) <= maxTokens
+
+
+  def bounded[T](state: T, maxTokens: Int): MultiSetSafety[T] = Bounded[T](state, maxTokens)
+  def rwMutualExclusion[T](positions: Map[T, Set[T]]): MultiSetSafety[T] = RWMutualExclusion[T](positions)
+  def mutualExclusion[T](state: T): MultiSetSafety[T] = MutualExclusion[T](state)
