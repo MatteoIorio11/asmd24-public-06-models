@@ -3,12 +3,7 @@ package scala.u06.modelling
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers.{be, contain}
 import org.scalatest.matchers.should.Matchers.should
-import scala.u06.examples.PNReadersAndWrites.Place.*
-import scala.u06.examples.PNReadersAndWrites.readersAndWriters
-import scala.u06.utils.MSet
-
-import scala.language.postfixOps
-
+import scala.u06.examples.PNReadersAndWrites.*
 
 class SystemAnalysisMetrics extends AnyFunSuite:
   def now(): Long = java.lang.System.currentTimeMillis()
