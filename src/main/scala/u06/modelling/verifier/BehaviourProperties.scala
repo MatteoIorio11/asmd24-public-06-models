@@ -33,14 +33,19 @@ object BehaviourProperties:
    */
   private case class Fairness[T](private val allowedStates: Set[T]) extends MultiSetProperty[T]:
     override def isValid(traces: Seq[MSet[T]]): Boolean =
-      allowedStates.forall(state => traces.map(mset => mset(state)).sum > 0)
+      val frequencies: Map[T, Int] = traces
+        .map(mset => mset.asMap)
+        .flatMap(map => map.toList)
+        .groupMapReduce(l => l._1)(l => l._2)((f1, f2) => f1 + f2)
+
+      allowedStates.forall(state => frequencies(state) > 0)
 
   /** Reversibility
    * Whether the system can always return to the initial marking, no matter what marking is reached
    */
   private case class Reversibility[T](private val initialState: T) extends MultiSetProperty[T]:
     override def isValid(traces: Seq[MSet[T]]): Boolean =
-      (traces map (mset => mset(initialState))).sum > 1
+      (traces map (mset => mset(initialState))).sum >= 1
 
   def reachabilty[T](state: T): Property[MSet[T]] = Reachability[T](state)
   def deadlockFreeness[T](deadlockCondition: T => Iterable[T]): Property[T] = DeadlockFreeness[T](deadlockCondition)
