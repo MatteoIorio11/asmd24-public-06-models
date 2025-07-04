@@ -39,3 +39,8 @@ class BehaviourPropertiesSpec extends AnyFunSuite:
   test("Fairness: At some point it should be possible to do both operations (not at the same time)"):
     readersAndWriters
       .behaviourProperty(initialMarking, 100)(fairness(Set(P6, P7)))
+
+
+  test("Reversibility: At every run it should be possible to start again from the initial state"):
+    readersAndWriters
+      .behaviourProperty(MSet(P1, P5), 100)(reversibility(P1))
