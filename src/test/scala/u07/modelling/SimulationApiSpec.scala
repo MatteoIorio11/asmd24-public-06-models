@@ -13,6 +13,12 @@ import scala.language.postfixOps
 import scala.u07.examples.SimulationApi.SimulationBufferImpl
 import scala.u07.examples.SimulationApi.{SimulationFilter, SimulationOperation}
 
+/**
+ * <<SIMULATOR>>
+ * Take the communication channel CTMC example in StochasticChannelSimulation. Compute the average time at which
+ * communication is done—across n runs. Compute the relative amount of time (0% to 100%) that the system is in fail state until
+ * communication is done—across n runs. Extract an API for nicely performing similar checks.
+ */
 class SimulationApiSpec extends AnyFunSuite:
 
   private var simulations: Seq[Trace[State]] = (1 to 10).map(_ => stocChannel.newSimulationTrace(IDLE, Random()).take(10))

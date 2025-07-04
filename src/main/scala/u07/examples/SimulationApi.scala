@@ -2,6 +2,12 @@ package scala.u07.examples
 
 import scala.u07.modelling.CTMCSimulation.Trace
 
+/**
+ * <<SIMULATOR>>
+ * Take the communication channel CTMC example in StochasticChannelSimulation. Compute the average time at which
+ * communication is done—across n runs. Compute the relative amount of time (0% to 100%) that the system is in fail state until
+ * communication is done—across n runs. Extract an API for nicely performing similar checks.
+ */
 object SimulationApi:
   private type Simulations[S] = Seq[Trace[S]]
   // also very good with extension methods on Simulations!

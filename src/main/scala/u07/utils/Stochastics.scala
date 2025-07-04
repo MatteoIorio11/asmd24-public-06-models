@@ -25,6 +25,11 @@ object Stochastics:
     .get
 
   // (p1,a1),...,(pn,an) --> {a1 -> P1%,...,an -> Pn%}
+  /**
+   * <<RANDOM-UNIT-TESTER>>
+   * How do we unit-test with randomness? And how we test at all with randomness? Think about this in general. Try to create a
+   * repeatable unit test for Statistics as in utils.StochasticSpec.
+   */
   def statistics[A](choices: Set[(Double,A)], size: Int)
                    (using rnd: RandomGenerator): Map[A, Int] =
     (1 to size).map(_ => draw(cumulative(choices.toList)))
