@@ -3,10 +3,9 @@ package u06.modelling
 import u06.examples.PNReadersAndWrites
 import u06.utils.MSet
 
-import scala.u06.modelling.CachePaths.LRUCacheImpl
-import scala.u06.modelling.verifier.BehaviourProperties.{CheckBehaviourProperties, Property}
-import scala.u06.modelling.verifier.BehaviourProperties.CheckBehaviourProperties.fairness
-import scala.u06.modelling.verifier.SafetyProperties.Safety
+import u06.modelling.CachePaths.LRUCacheImpl
+import u06.modelling.verifier.BehaviourProperties.*
+import u06.modelling.verifier.SafetyProperties.Safety
 
 // Basical analysis helpers
 object SystemAnalysis:
@@ -49,6 +48,18 @@ object SystemAnalysis:
     def completePathsUpToDepth(s: S, depth:Int): Seq[Path[S]] =
       (1 to depth).to(LazyList) flatMap (paths(s, _)) filter complete
 
+
+    // Generate path lazily
+    private def generateTraces(s: S): LazyList[S] =
+      def explore(seen: Set[S], current: S): LazyList[S] =
+        val otherTraces =
+          for
+            next <- system.next(current).filterNot(seen).to(LazyList)
+            traces <- explore(seen + current, next)
+          yield (traces)
+        LazyList(current) #::: otherTraces
+      explore(Set(), s)
+
     /**
      * <<TOOLING>>
      * The current API might be re-organised: can we generate/navigate all paths (even with loops) thanks to caching and lazy evaluation?
@@ -62,5 +73,4 @@ object SystemAnalysis:
       bfs(state, depth) forall (path => safety.isSafe(path))
 
     def behaviourProperty(state: S, depth: Int)(property: Property[S]): Boolean =
-      //      property.isValid(completePathsUpToDepthWithCache(state, depth))
-      false
+      property.isValid(generateTraces(state).take(depth))
