@@ -1,7 +1,7 @@
 package scala.u07.examples
 
-import u07.examples.StochasticChannel.State
-import u07.modelling.CTMCSimulation.Trace
+import scala.u07.examples.StochasticChannel.State
+import scala.u07.modelling.CTMCSimulation.Trace
 
 object TracesLogic:
   sealed trait TraceLogic[X]:

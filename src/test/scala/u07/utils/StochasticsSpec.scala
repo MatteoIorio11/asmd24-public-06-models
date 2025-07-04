@@ -4,11 +4,10 @@ import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers.*
-import org.scalactic.Tolerance.convertNumericToPlusOrMinusWrapper
 import org.scalatest.BeforeAndAfter
 
-import java.util.Random
 import java.util.random.RandomGenerator
+import scala.u07.utils.Stochastics
 
 /**
  * <<RANDOM-UNIT-TESTER>>
@@ -17,7 +16,7 @@ import java.util.random.RandomGenerator
  */
 class StochasticsSpec extends AnyFunSuite with BeforeAndAfter:
   val myMockRandom: RandomGenerator = Mockito.mock(classOf[RandomGenerator])
-  val choices = Set( 1.0->"a", 2.0->"b", 3.0->"c")
+  val choices: Set[(Double, String)] = Set( 1.0->"a", 2.0->"b", 3.0->"c")
 
   before:
     when(myMockRandom.nextDouble()).thenReturn(0.3)

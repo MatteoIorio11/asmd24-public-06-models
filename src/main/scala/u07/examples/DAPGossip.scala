@@ -1,19 +1,19 @@
-package u07.examples
+package scala.u07.examples
 
 import java.util.Random
 
-import u07.modelling.{CTMCSimulation, DAP, DAPGrid}
-import u07.modelling.CTMCSimulation.*
-import u07.utils.{Grids, MSet}
+import scala.u07.modelling.{CTMCSimulation, DAP, DAPGrid}
+import scala.u07.modelling.CTMCSimulation.*
+import scala.u07.utils.{Grids, MSet}
 
 object DAPGossip:
   enum Place:
     case A,B,C
   type ID = (Int, Int)
   export Place.*
-  export u07.modelling.DAP.*
-  export u07.modelling.DAPGrid.*
-  export u07.modelling.CTMCSimulation.*
+  export scala.u07.modelling.DAP.*
+  export scala.u07.modelling.DAPGrid.*
+  export scala.u07.modelling.CTMCSimulation.*
 
   val gossipRules = DAP[Place](
     Rule(MSet(A,A), m => 1000,  MSet(A),  MSet()),   // a|a --1000--> a

@@ -1,8 +1,8 @@
 package scala.u07.examples
 
-import u07.examples.StochasticMutualExclusion.Place.N
-import u07.modelling.SPN
-import u07.utils.MSet
+import scala.u07.examples.StochasticMutualExclusion.Place.N
+import scala.u07.modelling.SPN
+import scala.u07.utils.MSet
 
 import java.util.Random
 
@@ -22,8 +22,8 @@ object StochasticReadersWriters extends App:
   )
 
   export Place.*
-  export u07.modelling.CTMCSimulation.*
-  export u07.modelling.SPN.*
+  export scala.u07.modelling.CTMCSimulation.*
+  export scala.u07.modelling.SPN.*
 
   println:
     toCTMC(stochasticRW).newSimulationTrace(MSet(p1, p5), new Random)

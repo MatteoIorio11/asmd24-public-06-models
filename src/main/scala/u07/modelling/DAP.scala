@@ -1,8 +1,8 @@
-package u07.modelling
+package scala.u07.modelling
 
 import java.util.Random
-import u07.modelling.CTMC.*
-import u07.utils.{Grids, MSet}
+import scala.u07.modelling.CTMC.*
+import scala.u07.utils.{Grids, MSet}
 
 // modules defining the concept of Distributed Asynchronous stochastic Petri net
 object DAP:

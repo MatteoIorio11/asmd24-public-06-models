@@ -1,6 +1,6 @@
-package u07.examples
+package scala.u07.examples
 
-import u07.modelling.CTMC
+import scala.u07.modelling.CTMC
 
 import java.util.Random
 import scala.u07.examples.SimulationApi.SimulationImpl
@@ -11,7 +11,7 @@ object StochasticChannel:
     case IDLE, SEND, DONE, FAIL;
 
   export State.*
-  export u07.modelling.CTMCSimulation.*
+  export scala.u07.modelling.CTMCSimulation.*
 
   def stocChannel: CTMC[State] = CTMC.ofTransitions(
     Transition(IDLE,1.0 --> SEND),

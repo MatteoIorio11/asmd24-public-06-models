@@ -3,9 +3,9 @@ package scala.u07.modelling
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers.be
 import org.scalatest.matchers.should.Matchers.should
-import u07.examples.StochasticChannel.State.{DONE, FAIL, IDLE}
-import u07.examples.StochasticChannel.{State, stocChannel}
-import u07.modelling.CTMCSimulation.Trace
+import scala.u07.examples.StochasticChannel.State.{DONE, FAIL, IDLE}
+import scala.u07.examples.StochasticChannel.{State, stocChannel}
+import scala.u07.modelling.CTMCSimulation.Trace
 
 import java.util.Random
 import scala.collection.immutable.{List, Seq}

@@ -1,4 +1,4 @@
-package u07.utils
+package scala.u07.utils
 
 import java.util.Random
 import java.util.random.RandomGenerator
