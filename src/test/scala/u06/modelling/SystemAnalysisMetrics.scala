@@ -11,9 +11,9 @@ import scala.language.postfixOps
 
 
 class SystemAnalysisMetrics extends AnyFunSuite:
-  // Flaky
   def now(): Long = java.lang.System.currentTimeMillis()
 
+  // Flaky
   test("The complete paths up to depth with the cache should be faster than without"):
     readersAndWriters.completePathsUpToDepth(MSet(P1), 10)
     readersAndWriters.completePathsUpToDepthWithCache(MSet(P1), 10)
