@@ -49,7 +49,17 @@ object SystemAnalysis:
       (1 to depth).to(LazyList) flatMap (paths(s, _)) filter complete
 
 
-    // Generate path lazily
+    /**
+     * Lazily generates all possible traces (paths) from a given starting state `s`
+     * through the state-transition system defined by `system.next`.
+     *
+     * This method performs a lazy depth-first traversal, avoiding cycles by
+     * tracking visited states in a `seen` set.
+     *
+     * @param s The starting state from which to begin the trace generation.
+     * @return A `LazyList` of states representing all reachable paths from `s`,
+     *         lazily evaluated and avoiding revisiting already explored states.
+     */
     private def generateTraces(s: S): LazyList[S] =
       def explore(seen: Set[S], current: S): LazyList[S] =
         val otherTraces =
