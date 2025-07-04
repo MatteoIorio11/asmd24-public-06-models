@@ -9,7 +9,7 @@ import scala.u06.modelling.SystemAnalysis.behaviourProperty
 import scala.u06.modelling.verifier.BehaviourProperties.*
 
 import scala.u06.modelling.verifier.BehaviourProperties.{Reachability, reachabilty}
-import scala.u06.modelling.verifier.SafetyProperties.{Bounded, RWMutualExclusion, bounded}
+import scala.u06.modelling.verifier.SafetyProperties.{Bounded, RWMutualExclusion, bounded, rwMutualExclusion}
 import scala.u06.modelling.verifier.BehaviourProperties.*
 import scala.u06.modelling.System.*
 import scala.u06.examples.PNReadersAndWrites.*
@@ -20,7 +20,7 @@ class BehaviourPropertiesSpec extends AnyFunSuite:
 
   test("Mutual Exclusion: No Readers and writers at the same time"):
     readersAndWriters.
-      safetyProperty(initialMarking, 100)(RWMutualExclusion[Place](Map(P6 -> Set(P7)))) shouldBe true
+      safetyProperty(initialMarking, 100)(rwMutualExclusion(Map(P6 -> Set(P7)))) shouldBe true
 
   test("Bounded: We have at max two tokens inside the initial state"):
     readersAndWriters
@@ -34,3 +34,8 @@ class BehaviourPropertiesSpec extends AnyFunSuite:
   test("Deadlock Freeness: The Readers and Writers petri net should be free from deadlocks"):
     readersAndWriters
       .behaviourProperty(initialMarking, 100)(deadlockFreeness(state => readersAndWriters.next(state))) shouldBe true
+
+
+  test("Fairness: At some point it should be possible to do both operations (not at the same time)"):
+    readersAndWriters
+      .behaviourProperty(initialMarking, 100)(fairness(Set(P6, P7)))
