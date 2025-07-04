@@ -1,4 +1,4 @@
-package scala.u06.modelling
+package u06.modelling
 
 import u06.modelling.SystemAnalysis.{Path, paths}
 
