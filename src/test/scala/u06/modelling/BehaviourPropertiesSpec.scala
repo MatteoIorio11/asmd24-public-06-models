@@ -30,8 +30,7 @@ class BehaviourPropertiesSpec extends AnyFunSuite:
     readersAndWriters
       .behaviourProperty(initialMarking, 100)(reachabilty(P6))
 
-  /*test("Deadlock Freeness: The Readers and Writers petri net should be free from deadlocks"):
-    readersAndWriters
-      .behaviourProperty(initialMarking, 100)(deadlockFreeness((state: Place)=> readersAndWriters.next(state))) shouldBe true
 
-*/
+  test("Deadlock Freeness: The Readers and Writers petri net should be free from deadlocks"):
+    readersAndWriters
+      .behaviourProperty(initialMarking, 100)(deadlockFreeness(state => readersAndWriters.next(state))) shouldBe true
