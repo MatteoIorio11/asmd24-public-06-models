@@ -1,6 +1,6 @@
-package u06.modelling
+package scala.u06.modelling
 
-import u06.utils.MSet
+import scala.u06.utils.MSet
 
 object PetriNet:
   // pre-conditions, effects, inhibition

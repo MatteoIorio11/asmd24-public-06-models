@@ -2,16 +2,36 @@ package scala.u06.modelling
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers.shouldBe
-import u06.examples.PNReadersAndWrites
-import u06.examples.PNReadersAndWrites.{P1, P5, P6, P7, Place, readersAndWriters}
-import u06.utils.MSet
+import scala.u06.examples.PNReadersAndWrites
+import scala.u06.examples.PNReadersAndWrites.{P1, P5, P6, P7, Place, readersAndWriters}
+import scala.u06.modelling.SystemAnalysis.behaviourProperty
 
-import scala.u06.modelling.verifier.SafetyProperties.RWMutualExclusion
+import scala.u06.modelling.verifier.BehaviourProperties.*
+
+import scala.u06.modelling.verifier.BehaviourProperties.{Reachability, reachabilty}
+import scala.u06.modelling.verifier.SafetyProperties.{Bounded, RWMutualExclusion, bounded}
+import scala.u06.modelling.verifier.BehaviourProperties.*
+import scala.u06.modelling.System.*
+import scala.u06.examples.PNReadersAndWrites.*
+
 
 class BehaviourPropertiesSpec extends AnyFunSuite:
-  val initialMarking: MSet[Place] = MSet(P1, P5)
+  val initialMarking: MSet[Place] = MSet(P1, P1, P5)
 
-  test("Reachability property"):
-    val e = readersAndWriters.safetyProperty(initialMarking, 100)(RWMutualExclusion[Place](Map(P6 -> Set(P7))))
-    e shouldBe (true)
+  test("Mutual Exclusion: No Readers and writers at the same time"):
+    readersAndWriters.
+      safetyProperty(initialMarking, 100)(RWMutualExclusion[Place](Map(P6 -> Set(P7)))) shouldBe true
 
+  test("Bounded: We have at max two tokens inside the initial state"):
+    readersAndWriters
+      .safetyProperty(initialMarking, 100)(bounded(P1, 2)) shouldBe true
+
+  test("Reachability: At some point it is possible to read"):
+    readersAndWriters
+      .behaviourProperty(initialMarking, 100)(reachabilty(P6))
+
+  /*test("Deadlock Freeness: The Readers and Writers petri net should be free from deadlocks"):
+    readersAndWriters
+      .behaviourProperty(initialMarking, 100)(deadlockFreeness((state: Place)=> readersAndWriters.next(state))) shouldBe true
+
+*/

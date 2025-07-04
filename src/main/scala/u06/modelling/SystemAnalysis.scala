@@ -1,11 +1,11 @@
-package u06.modelling
+package scala.u06.modelling
 
-import u06.examples.PNReadersAndWrites
-import u06.utils.MSet
+import scala.u06.examples.PNReadersAndWrites
+import scala.u06.utils.MSet
 
-import u06.modelling.CachePaths.LRUCacheImpl
-import u06.modelling.verifier.BehaviourProperties.*
-import u06.modelling.verifier.SafetyProperties.Safety
+import scala.u06.modelling.CachePaths.LRUCacheImpl
+import scala.u06.modelling.verifier.BehaviourProperties.*
+import scala.u06.modelling.verifier.SafetyProperties.Safety
 
 // Basical analysis helpers
 object SystemAnalysis:

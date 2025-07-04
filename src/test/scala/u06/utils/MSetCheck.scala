@@ -1,13 +1,15 @@
-package u06.utils
+package scalau06.utils
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Prop.forAll
 import org.scalacheck.{Arbitrary, Properties}
 
+import scala.u06.utils.MSet
+
 object MSetCheck extends Properties("MSet"):
 
   given msetArbitrary[A:Arbitrary]: Arbitrary[MSet[A]] =
-    Arbitrary(arbitrary[List[A]] map (MSet.ofList(_)))
+    Arbitrary(arbitrary[List[A]] map MSet.ofList)
 
   property ("has constructors that are compatible") = forAll: (list: List[Int]) =>
     val m1 = MSet.ofList(list); m1 == MSet.ofMap(m1.asMap)

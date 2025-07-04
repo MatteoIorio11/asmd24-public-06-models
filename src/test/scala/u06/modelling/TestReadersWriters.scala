@@ -3,11 +3,11 @@ package scala.u06.modelling
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers.*
-import u06.modelling.SystemAnalysis
+import scala.u06.modelling.SystemAnalysis
 
 class TestReadersWriters extends AnyFunSuite:
-  import u06.examples.PNReadersAndWrites.*
-  import u06.utils.MSet
+  import scala.u06.examples.PNReadersAndWrites.*
+  import scala.u06.utils.MSet
 
   test("When the computation starts from P1 and the length is 2, then the path should be P1 -> P2 -> P3"):
     val expected1 = List(MSet(P1), MSet(P2))

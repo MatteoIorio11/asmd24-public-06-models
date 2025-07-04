@@ -1,6 +1,6 @@
-package u06.modelling.verifier
+package scala.u06.modelling.verifier
 
-import u06.utils.MSet
+import scala.u06.utils.MSet
 
 object SafetyProperties:
   trait Safety[S]:

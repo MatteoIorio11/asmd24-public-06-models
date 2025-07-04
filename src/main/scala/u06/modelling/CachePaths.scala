@@ -1,6 +1,6 @@
-package u06.modelling
+package scala.u06.modelling
 
-import u06.modelling.SystemAnalysis.{Path, paths}
+import scala.u06.modelling.SystemAnalysis.{Path, paths}
 
 import scala.collection.immutable.{LazyList, Seq}
 

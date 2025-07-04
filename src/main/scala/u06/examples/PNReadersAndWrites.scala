@@ -1,6 +1,6 @@
-package u06.examples
+package scala.u06.examples
 
-import u06.modelling.PetriNet
+import scala.u06.modelling.PetriNet
 
 
 object PNReadersAndWrites:
@@ -8,9 +8,9 @@ object PNReadersAndWrites:
     case P1, P2, P3, P4, P5, P6, P7, P8
 
   export Place.*
-  export u06.modelling.PetriNet.*
-  export u06.modelling.SystemAnalysis.*
-  export u06.utils.MSet
+  export scala.u06.modelling.PetriNet.*
+  export scala.u06.modelling.SystemAnalysis.*
+  export scala.u06.utils.MSet
 
   def readersAndWriters = PetriNet[Place](
     MSet(P1) ~~> MSet(P2), // t1
