@@ -31,8 +31,7 @@ class BehaviourPropertiesSpec extends AnyFunSuite:
 
   test("Reachability: At some point it is possible to read"):
     readersAndWriters
-      .behaviourProperty(initialMarking, 100)(reachabilty(P6))
-
+      .behaviourProperty(initialMarking, 100)(reachabilty(P6)) shouldBe true
 
   test("Deadlock Freeness: The Readers and Writers petri net should be free from deadlocks"):
     readersAndWriters
@@ -41,9 +40,9 @@ class BehaviourPropertiesSpec extends AnyFunSuite:
 
   test("Fairness: At some point it should be possible to do both operations (not at the same time)"):
     readersAndWriters
-      .behaviourProperty(initialMarking, 100)(fairness(Set(P6, P7)))
+      .behaviourProperty(initialMarking, 100)(fairness(Set(P6, P7))) shouldBe true
 
 
   test("Reversibility: At every run it should be possible to start again from the initial state"):
     readersAndWriters
-      .behaviourProperty(MSet(P1, P5), 100)(reversibility(P1))
+      .behaviourProperty(MSet(P1, P5), 100)(reversibility(P1)) shouldBe true
