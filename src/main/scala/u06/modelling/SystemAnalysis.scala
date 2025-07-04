@@ -64,7 +64,7 @@ object SystemAnalysis:
       def explore(seen: Set[S], current: S): LazyList[S] =
         val otherTraces =
           for
-            next <- system.next(current).filterNot(seen).to(LazyList)
+            next <- system.next(current).diff(seen).to(LazyList)
             traces <- explore(seen + current, next)
           yield (traces)
         LazyList(current) #::: otherTraces
