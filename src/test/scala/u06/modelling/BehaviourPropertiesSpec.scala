@@ -22,9 +22,9 @@ class BehaviourPropertiesSpec extends AnyFunSuite:
     readersAndWriters.
       safetyProperty(initialMarking, 100)(rwMutualExclusion(Map(P6 -> Set(P7)))) shouldBe true
 
-  test("Bounded: We have at max two tokens inside the initial state"):
+  test("Bounded: We have always one shared resource"):
     readersAndWriters
-      .safetyProperty(initialMarking, 100)(bounded(P1, 2)) shouldBe true
+      .safetyProperty(initialMarking, 100)(bounded(P5, 1)) shouldBe true
 
   test("Reachability: At some point it is possible to read"):
     readersAndWriters
