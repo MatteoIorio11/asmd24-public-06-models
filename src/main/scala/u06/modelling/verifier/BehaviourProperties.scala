@@ -1,4 +1,4 @@
-package scala.u06.modelling.verifier
+package u06.modelling.verifier
 
 import u06.utils.MSet
 
@@ -26,7 +26,6 @@ object BehaviourProperties:
       allowedStates.forall(state => traces.map(mset => mset(state)).sum > 0)
 
 
-  object CheckBehaviourProperties:
-    def reachabilty[T](state: T): Property[MSet[T]] = Reachability[T](state)
-    def deadlockFreeness[T](deadlocks: Set[T]): Property[MSet[T]] = DeadlockFreeness[T](deadlocks)
-    def fairness[T](allowedStates: Set[T]): Property[MSet[T]] = Fairness[T](allowedStates)
+  def reachabilty[T](state: T): Property[MSet[T]] = Reachability[T](state)
+  def deadlockFreeness[T](deadlocks: Set[T]): Property[MSet[T]] = DeadlockFreeness[T](deadlocks)
+  def fairness[T](allowedStates: Set[T]): Property[MSet[T]] = Fairness[T](allowedStates)
