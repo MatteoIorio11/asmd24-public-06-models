@@ -20,32 +20,32 @@ import scala.u07.examples.SimulationApi.{SimulationBufferImpl, SimulationFilter,
  */
 class SimulationApiSpec extends AnyFunSuite:
 
-  private val simulations: Seq[Trace[State]] = (1 to 10).map(_ => stocChannel.newSimulationTrace(IDLE, Random()).take(40))
+  private val simulations: Seq[Trace[State]] = (1 to 10).map(_ => stocChannel.newSimulationTrace(IDLE, Random()).take(10))
     .flatMap(trace => LazyList(trace))
 
   test ("Simulation Filter should correctly filter all the input traces with a specific filter"):
     val predicateApis = new SimulationBufferImpl[State](simulations) with SimulationFilter[State]
-    val allDone = predicateApis.applyFilter(trace => trace.exists(s => s.state == DONE))
+    val allDone = predicateApis.filterSimulations(trace => trace.exists(s => s.state == DONE))
     allDone.simulations forall(trace => trace.exists(s => s.state == DONE)) should be (true)
 
   test("Simulation Filter should correctlu count all the input traces with a specific filter"):
     val predicateApis = new SimulationBufferImpl[State](simulations) with SimulationFilter[State]
-    val countIdle = predicateApis.applyCount(trace => trace.exists(s => s.state == IDLE))
+    val countIdle = predicateApis.countSimulationsOf(trace => trace.exists(s => s.state == IDLE))
     countIdle == predicateApis.size
 
   test("Simulation Filter should correctly take all the traces until a specific state"):
     val predicateApis = new SimulationBufferImpl[State](simulations) with SimulationFilter[State]
-    val withoutFail = predicateApis.applyTakeUntil(trace => trace.exists(s => s.state == FAIL))
+    val withoutFail = predicateApis.takeSimulationsUntil(trace => trace.exists(s => s.state == FAIL))
     withoutFail.simulations forall(trace => trace.count(s => s.state == FAIL) == 0) should be (true)
 
   test("Simulation Operation should correctly map the traces into newer trace"):
     val operationApi = new SimulationBufferImpl[State](simulations) with SimulationOperation[State]
-    val mappedTraces = operationApi.applyFunction(trace => LazyList(trace.last))
+    val mappedTraces = operationApi.transformSimulations(trace => LazyList(trace.last))
     mappedTraces.simulations forall(trace => trace.size == 1) should be (true)
 
   test("Simulation Operation should correctly take N traces"):
     val N = 1
     val operationApi = new SimulationBufferImpl[State](simulations) with SimulationOperation[State]
-    val firstN = operationApi.applyTakeFirstN(N)
+    val firstN = operationApi.takeFirstNSimulations(N)
     firstN.size == N
 

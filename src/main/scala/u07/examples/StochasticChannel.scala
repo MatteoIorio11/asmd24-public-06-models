@@ -2,7 +2,7 @@ package scala.u07.examples
 
 import scala.u07.modelling.CTMC
 import java.util.Random
-import scala.u07.examples.SimulationApi.{simulationProcessor}
+import scala.u07.examples.SimulationApi.{simulationBuffer, simulationFilter, simulationOperation, simulationProcessor}
 import scala.u07.examples.TracesLogic
 
 object StochasticChannel:
@@ -21,7 +21,7 @@ object StochasticChannel:
     Transition(DONE,1.0 --> DONE)
   )
 
-  def tracesApi[X](trace: Seq[Trace[State]], function: Seq[Trace[State]] => X): X =
+  def tracesApi[X](trace: Seq[Trace[State]])(function: Seq[Trace[State]] => X): X =
     function(trace)
 
   /**
@@ -52,3 +52,11 @@ object StochasticChannel:
     })
   println("Mean of Done: " + meanDone(traces) + "%")
   println("Mean of Fail to Done: " + meanFailToDone(traces) + "%")
+ /*
+  simulationProcessor(traces)
+    .applyFilter(aFilter)
+    .applyFunction(aFunction)
+    .applyFilter(aFilter)
+    .applyTakeFirstN(N)
+    .applyTakeUntil(aFilter)
+*/
