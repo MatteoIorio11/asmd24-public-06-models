@@ -18,10 +18,10 @@ object SafetyProperties:
   /** Readers and Writers Mutual Exclusion
    * It is not possible to have readers and writers at the same time.
    */
-  private case class MutualExclusion[T](private val regions: Seq[MSet[T]]) extends MultiSetSafety[T]:
+  private case class MutualExclusion[T](private val combinations: Seq[MSet[T]]) extends MultiSetSafety[T]:
     override def isSafe(s: MSet[T]): Boolean =
       val map: Map[T, Int] = s.asMap
-      !(regions exists (mset => mset.asMap.keys.forall(k => map.getOrElse(k, 0) > 0)))
+      !(combinations exists (mset => mset.asMap.keys.forall(k => map.getOrElse(k, 0) > 0)))
 
   /** Bounded
    * A place has at most maxTokens tokens.
@@ -31,4 +31,4 @@ object SafetyProperties:
 
 
   def bounded[T](state: T, maxTokens: Int): SafetyCheck[MSet[T]] = Bounded[T](state, maxTokens)
-  def mutualExclusion[T](regions: Seq[MSet[T]]): SafetyCheck[MSet[T]] = MutualExclusion[T](regions)
+  def mutualExclusion[T](combinations: Seq[MSet[T]]): SafetyCheck[MSet[T]] = MutualExclusion[T](combinations)
