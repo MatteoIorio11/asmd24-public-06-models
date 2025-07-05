@@ -43,6 +43,7 @@ object SystemAnalysis:
     def completePathsUpToDepth(s: S, depth:Int): Seq[Path[S]] =
       (1 to depth).to(LazyList) flatMap (paths(s, _)) filter complete
 
+    // Generate path lazily
     private def generateTraces(s: S): LazyList[S] =
       def explore(seen: Set[S], current: S): LazyList[S] =
         val otherTraces =
