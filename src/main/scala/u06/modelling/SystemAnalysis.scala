@@ -2,10 +2,9 @@ package scala.u06.modelling
 
 import scala.u06.examples.PNReadersAndWrites
 import scala.u06.utils.MSet
-
 import scala.u06.modelling.CachePaths.LRUCacheImpl
-import scala.u06.modelling.verifier.BehaviourProperties.*
-import scala.u06.modelling.verifier.SafetyProperties.Safety
+import scala.u06.modelling.verifier.BehaviourProperties.PropertyCheck
+import scala.u06.modelling.verifier.SafetyProperties.SafetyCheck
 
 // Basical analysis helpers
 object SystemAnalysis:
@@ -79,8 +78,8 @@ object SystemAnalysis:
       lru.execute(s, depth, paths, complete)
 
 
-    def safetyProperty(state: S, depth: Int)(safety: Safety[S]): Boolean =
+    def safetyProperty(state: S, depth: Int)(safety: SafetyCheck[S]): Boolean =
       bfs(state, depth) forall (path => safety.isSafe(path))
 
-    def behaviourProperty(state: S, depth: Int)(property: Property[S]): Boolean =
+    def behaviourProperty(state: S, depth: Int)(property: PropertyCheck[S]): Boolean =
       property.isValid(generateTraces(state).take(depth))
