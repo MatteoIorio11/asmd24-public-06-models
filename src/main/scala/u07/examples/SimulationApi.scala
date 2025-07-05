@@ -1,7 +1,7 @@
 package scala.u07.examples
 
-import scala.u07.modelling.CTMCSimulation.Trace
-
+import scala.u07.examples.StochasticChannel.State.IDLE
+import scala.u07.modelling.CTMCSimulation.{Event, Trace}
 /**
  * <<SIMULATOR>>
  * Take the communication channel CTMC example in StochasticChannelSimulation. Compute the average time at which
@@ -14,17 +14,32 @@ object SimulationApi:
   trait SimulationBuffer[S]:
     def simulations: Simulations[S]
     def size: Int
+    def map[X](fun: Trace[S] => Trace[X]): SimulationBuffer[X] =
+      simulationBuffer(simulations.map(fun(_)))
+    def flatMap[X](fun: Trace[S] => SimulationBuffer[X]): SimulationBuffer[X] =
+      simulationBuffer(simulations.flatMap(fun(_).simulations))
+
   trait SimulationOperation[S] extends SimulationBuffer[S]:
     def transformSimulations[X](function: Trace[S] => Trace[X]): SimulationOperation[X] =
       simulationOperation(simulations map function)
     def takeFirstNSimulations(n: Int): SimulationOperation[S] =
       simulationOperation(simulations take (n))
+    override def map[X](fun: Trace[S] => Trace[X]): SimulationOperation[X] =
+      simulationOperation(super.map(fun).simulations)
+    override def flatMap[X](fun: Trace[S] => SimulationBuffer[X]): SimulationOperation[X] =
+      simulationOperation(super.flatMap(fun).simulations)
+
   trait SimulationFilter[S] extends SimulationBuffer[S]:
     def filterSimulations(predicate: Trace[S] => Boolean): SimulationFilter[S] =
       simulationFilter(simulations filter predicate)
     def takeSimulationsUntil(predicate: Trace[S] => Boolean): SimulationFilter[S] =
       simulationFilter(simulations takeWhile predicate)
     def countSimulationsOf(predicate: Trace[S] => Boolean): Int = simulations count predicate
+    override def map[X](fun: Trace[S] => Trace[X]): SimulationFilter[X] =
+      simulationFilter(super.map(fun).simulations)
+    override def flatMap[X](fun: Trace[S] => SimulationBuffer[X]): SimulationFilter[X] =
+      simulationFilter(super.flatMap(fun).simulations)
+
   trait SimulationStatistic[S] extends SimulationBuffer[S]:
     def meanForTrace(predicate: Trace[S] => Boolean): Double
 
@@ -37,10 +52,13 @@ object SimulationApi:
       simulationProcessor(super.takeSimulationsUntil(predicate).simulations)
     override def takeFirstNSimulations(n: Int): SimulationProcessor[S] =
       simulationProcessor(super.takeFirstNSimulations(n).simulations)
+    override def map[X](fun: Trace[S] => Trace[X]): SimulationProcessor[X] =
+        simulationProcessor(super.map(fun).simulations)
+    override def flatMap[X](fun: Trace[S] => SimulationBuffer[X]): SimulationProcessor[X] =
+      simulationProcessor(super.flatMap(fun).simulations)
 
 
   private case class SimulationProcessorImpl[S](override val simulations: Simulations[S]) extends SimulationProcessor[S] with SimulationStatistic[S]:
-
     override def size: Int = simulations.size
 
     override def meanForTrace(predicate: Trace[S] => Boolean): Double = size match

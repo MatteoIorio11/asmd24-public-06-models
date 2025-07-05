@@ -2,8 +2,7 @@ package scala.u07.examples
 
 import scala.u07.modelling.CTMC
 import java.util.Random
-import scala.u07.examples.SimulationApi.{simulationBuffer, simulationFilter, simulationOperation, simulationProcessor}
-import scala.u07.examples.TracesLogic
+import scala.u07.examples.SimulationApi.{SimulationBuffer, simulationBuffer, simulationProcessor}
 
 object StochasticChannel:
   enum State:
@@ -52,6 +51,16 @@ object StochasticChannel:
     })
   println("Mean of Done: " + meanDone(traces) + "%")
   println("Mean of Fail to Done: " + meanFailToDone(traces) + "%")
+  val sims = simulationBuffer(traces)
+ /*
+  val result =
+    for
+    trace <- sims
+    trace2 <- simulationBuffer(Seq(
+      trace.map(e => Event(e.time * 2, e.state)),
+      trace.map(e => Event(e.time * 10, e.state)
+    )))
+    yield (trace2)*/
  /*
   simulationProcessor(traces)
     .applyFilter(aFilter)
