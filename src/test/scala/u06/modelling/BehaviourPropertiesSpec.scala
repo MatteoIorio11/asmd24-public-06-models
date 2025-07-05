@@ -28,11 +28,9 @@ class BehaviourPropertiesSpec extends AnyFunSuite:
     readersAndWriters
       .behaviourProperty(initialMarking, 100)(deadlockFreeness(state => readersAndWriters.next(state))) shouldBe true
 
-
   test("Fairness: At some point it should be possible to do both operations (not at the same time)"):
     readersAndWriters
       .behaviourProperty(initialMarking, 100)(fairness(Set(P6, P7))) shouldBe true
-
 
   test("Reversibility: At every run it should be possible to start again from the initial state"):
     readersAndWriters
