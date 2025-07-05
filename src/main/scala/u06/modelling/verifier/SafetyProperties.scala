@@ -20,8 +20,8 @@ object SafetyProperties:
    */
   private case class MutualExclusion[T](private val regions: Seq[MSet[T]]) extends MultiSetSafety[T]:
     override def isSafe(s: MSet[T]): Boolean =
-      val map = s.asMap
-      !(regions map(mset => mset.asMap.keys) exists(keys => keys.forall(k => map.getOrElse(k, 0) > 0)))
+      val map: Map[T, Int] = s.asMap
+      !(regions exists (mset => mset.asMap.keys.forall(k => map.getOrElse(k, 0) > 0)))
 
   /** Bounded
    * A place has at most maxTokens tokens.
