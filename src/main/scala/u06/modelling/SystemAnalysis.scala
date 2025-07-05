@@ -16,7 +16,7 @@ object SystemAnalysis:
 
     def normalForm(s: S): Boolean = system.next(s).isEmpty
 
-    def complete(p: Path[S]): Boolean = normalForm(p.last)
+    private def complete(p: Path[S]): Boolean = normalForm(p.last)
 
     // paths of exactly length `depth`
     def paths(s: S, depth: Int): Seq[Path[S]] = depth match
@@ -28,7 +28,7 @@ object SystemAnalysis:
           next <- system.next(path.last)
         yield path :+ next
 
-    def bfs(s: S, depth: Int): Set[S] =
+    private def bfs(s: S, depth: Int): Set[S] =
       var seen = Set[S]()
       var queue = scala.collection.mutable.ArrayDeque(s)
       var currentDepth = 0
