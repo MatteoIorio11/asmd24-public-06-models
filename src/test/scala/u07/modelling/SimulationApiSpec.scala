@@ -2,9 +2,9 @@ package scala.u07.modelling
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.must.Matchers.be
-import org.scalatest.matchers.should.Matchers.should
+import org.scalatest.matchers.should.Matchers.{should, shouldBe}
 
-import scala.u07.examples.StochasticChannel.State.{DONE, FAIL, IDLE}
+import scala.u07.examples.StochasticChannel.State.{DONE, FAIL, IDLE, SEND}
 import scala.u07.examples.StochasticChannel.{State, stocChannel}
 import scala.u07.modelling.CTMCSimulation.Trace
 import java.util.Random
@@ -18,9 +18,21 @@ import scala.u07.examples.SimulationApi.{SimulationBufferImpl, SimulationFilter,
  * communication is done—across n runs. Compute the relative amount of time (0% to 100%) that the system is in fail state until
  * communication is done—across n runs. Extract an API for nicely performing similar checks.
  */
-class SimulationApiSpec extends AnyFunSuite:
+object StubFailingChannel:
+  export scala.u07.modelling.CTMCSimulation.*
+  // FAKE
+  def stocFailChannel: CTMC[State] = CTMC.ofTransitions(
+    Transition(IDLE, 1.0 --> SEND),
+    Transition(SEND, 1000.0 --> FAIL),
+    Transition(FAIL, 100000.0 --> IDLE),
+  )
 
+class SimulationApiSpec extends AnyFunSuite:
+  import StubFailingChannel.*
   private val simulations: Seq[Trace[State]] = (1 to 10).map(_ => stocChannel.newSimulationTrace(IDLE, Random()).take(10))
+    .flatMap(trace => LazyList(trace))
+  private val simulationWithFails: Seq[Trace[State]] = (1 to 10)
+    .map(_ => stocFailChannel.newSimulationTrace(IDLE, Random()).take(10))
     .flatMap(trace => LazyList(trace))
 
   test ("Simulation Filter should correctly filter all the input traces with a specific filter"):
@@ -34,9 +46,9 @@ class SimulationApiSpec extends AnyFunSuite:
     countIdle == predicateApis.size
 
   test("Simulation Filter should correctly take all the traces until a specific state"):
-    val predicateApis = new SimulationBufferImpl[State](simulations) with SimulationFilter[State]
-    val withoutFail = predicateApis.takeSimulationsUntil(trace => trace.exists(s => s.state == FAIL))
-    withoutFail.simulations forall(trace => trace.count(s => s.state == FAIL) == 0) should be (true)
+    val predicateApis = new SimulationBufferImpl[State](simulationWithFails) with SimulationFilter[State]
+    val withoutFail = predicateApis.takeSimulationsUntil(trace => trace(2).state != FAIL)
+    withoutFail.simulations forall(trace => trace.count(s => s.state == FAIL) == 0) shouldBe true
 
   test("Simulation Operation should correctly map the traces into newer trace"):
     val operationApi = new SimulationBufferImpl[State](simulations) with SimulationOperation[State]
