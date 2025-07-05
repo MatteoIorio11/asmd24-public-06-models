@@ -28,15 +28,14 @@ object SystemAnalysis:
         yield path :+ next
 
     private def dfs(state: S, maxDepth: Int): Set[S] =
-      def explore(current: S, depth: Int, visited: Set[S]): Set[S] =
-        if depth >= maxDepth || visited.contains(current) then visited
+      def explore(current: S, depth: Int, seen: Set[S]): Set[S] =
+        if depth >= maxDepth || seen.contains(current) then seen
         else
-          val nextStates =
-            for
-            next <- system.next(current).diff(visited)
-          yield explore(next, depth + 1, visited + current)
-          nextStates.foldLeft(visited + current)(_++_)
-      explore(state, 0, Set.empty)
+          val nextStates = for
+            next <- system.next(current).diff(seen)
+          yield explore(next, depth + 1, seen + current)
+          nextStates.foldLeft(seen + current)(_++_)
+      explore(state, 0, Set())
 
     // complete paths with length '<= depth' (could be optimised)
     def completePathsUpToDepth(s: S, depth:Int): Seq[Path[S]] =
