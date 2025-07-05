@@ -22,7 +22,7 @@ class BehaviourPropertiesSpec extends AnyFunSuite:
 
   test("Reachability: At some point it is possible to read"):
     readersAndWriters
-      .behaviourProperty(initialMarking, 100)(reachabilty(P6)) shouldBe true
+      .behaviourProperty(initialMarking, 100)(reachability(P6)) shouldBe true
 
   test("Deadlock Freeness: The Readers and Writers petri net should be free from deadlocks"):
     readersAndWriters
