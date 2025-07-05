@@ -1,9 +1,8 @@
 package scala.u07.examples
 
 import scala.u07.modelling.CTMC
-
 import java.util.Random
-import scala.u07.examples.SimulationApi.SimulationImpl
+import scala.u07.examples.SimulationApi.{simulationProcessor}
 import scala.u07.examples.TracesLogic
 
 object StochasticChannel:
@@ -32,12 +31,12 @@ object StochasticChannel:
    * communication is done—across n runs. Extract an API for nicely performing similar checks.
    */
   def meanDone(traces: Seq[Trace[State]]): Double =
-    val sim = SimulationImpl[State](traces)
+    val sim = simulationProcessor[State](traces)
     val mean = sim.meanForTrace(t => t.exists(s => s.state == DONE))
     mean * 100
 
   def meanFailToDone(traces: Seq[Trace[State]]): Double =
-    val sim = SimulationImpl[State](traces)
+    val sim = simulationProcessor[State](traces)
     val mean = sim.meanForTrace(t => t.exists(s => s.state == FAIL) && t.exists(s => s.state == DONE))
     mean * 100
 
