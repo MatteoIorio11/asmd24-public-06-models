@@ -16,22 +16,22 @@ object SimulationApi:
     def size: Int
   trait SimulationOperation[S] extends SimulationBuffer[S]:
     def applyFunction[X](function: Trace[S] => Trace[X]): SimulationBuffer[X] =
-      SimulationImpl(simulations map function)
+      simulationBuffer(simulations map function)
     def applyTakeFirstN(n: Int): SimulationBuffer[S] =
-      SimulationImpl(simulations take (n))
+      simulationBuffer(simulations take (n))
   trait SimulationFilter[S] extends SimulationBuffer[S]:
     def applyFilter(predicate: Trace[S] => Boolean): SimulationBuffer[S] =
-      SimulationImpl(simulations filter predicate)
+      simulationBuffer(simulations filter predicate)
     def applyTakeUntil(predicate: Trace[S] => Boolean): SimulationBuffer[S] =
-      SimulationImpl(simulations takeWhile predicate)
+      simulationBuffer(simulations takeWhile predicate)
     def applyCount(predicate: Trace[S] => Boolean): Int = simulations count predicate
-  trait SimulationStatistics[S] extends SimulationBuffer[S]:
+  trait SimulationStatistic[S] extends SimulationBuffer[S]:
     def meanForTrace(predicate: Trace[S] => Boolean): Double
 
-  case class SimulationImpl[S](override val simulations: Simulations[S]) extends SimulationBuffer[S]
+  private case class SimulationProcessorImpl[S](override val simulations: Simulations[S]) extends SimulationBuffer[S]
     with SimulationOperation[S]
     with SimulationFilter[S]
-    with SimulationStatistics[S]:
+    with SimulationStatistic[S]:
 
     override def size: Int = simulations.size
 
@@ -43,3 +43,7 @@ object SimulationApi:
 
   case class SimulationBufferImpl[S](override val simulations: Simulations[S]) extends SimulationBuffer[S]:
     override def size: Int = simulations.size
+
+
+  def simulationBuffer[S](simulations: Simulations[S]): SimulationBuffer[S] = SimulationBufferImpl[S](simulations)
+  def simulationProcessor[S](simulations: Simulations[S]): SimulationStatistic[S] = SimulationProcessorImpl[S](simulations)
