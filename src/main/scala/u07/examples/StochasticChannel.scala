@@ -32,12 +32,12 @@ object StochasticChannel:
    */
   def meanDone(traces: Seq[Trace[State]]): Double =
     val sim = simulationProcessor[State](traces)
-    val mean = sim.meanForTrace(t => t.exists(s => s.state == DONE))
+    val mean = sim.meanForTrace(t => t.last.state == DONE)
     mean * 100
 
   def meanFailToDone(traces: Seq[Trace[State]]): Double =
     val sim = simulationProcessor[State](traces)
-    val mean = sim.meanForTrace(t => t.exists(s => s.state == FAIL) && t.exists(s => s.state == DONE))
+    val mean = sim.meanForTrace(t => t.exists(s => s.state == FAIL) && t.last.state == DONE)
     mean * 100
 
 @main def mainStochasticChannel(): Unit =  // example run
