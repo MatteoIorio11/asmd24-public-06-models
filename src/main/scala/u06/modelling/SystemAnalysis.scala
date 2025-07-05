@@ -27,21 +27,16 @@ object SystemAnalysis:
           next <- system.next(path.last)
         yield path :+ next
 
-    private def bfs(s: S, depth: Int): Set[S] =
-      var seen = Set[S]()
-      var queue = scala.collection.mutable.ArrayDeque(s)
-      var currentDepth = 0
-      while queue.nonEmpty && currentDepth < depth do
-        val nextStates = for
-          state <- queue
-          others <- system.next(state)
-          if !seen.contains(others)
-        yield others
-        seen ++= nextStates
-        queue.appendAll(nextStates)
-        currentDepth += 1
-      seen
-
+    private def dfs(state: S, maxDepth: Int): Set[S] =
+      def explore(current: S, depth: Int, visited: Set[S]): Set[S] =
+        if depth >= maxDepth || visited.contains(current) then visited
+        else
+          val nextStates =
+            for
+            next <- system.next(current).diff(visited)
+          yield explore(next, depth + 1, visited + current)
+          nextStates.foldLeft(visited + current)(_++_)
+      explore(state, 0, Set.empty)
 
     // complete paths with length '<= depth' (could be optimised)
     def completePathsUpToDepth(s: S, depth:Int): Seq[Path[S]] =
@@ -79,7 +74,7 @@ object SystemAnalysis:
 
 
     def safetyProperty(state: S, depth: Int)(safety: SafetyCheck[S]): Boolean =
-      bfs(state, depth) forall (path => safety.isSafe(path))
+      dfs(state, depth) forall safety.isSafe
 
     def behaviourProperty(state: S, depth: Int)(property: PropertyCheck[S]): Boolean =
       property.isValid(generateTraces(state).take(depth))
