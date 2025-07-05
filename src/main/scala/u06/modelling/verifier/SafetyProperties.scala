@@ -10,10 +10,10 @@ object SafetyProperties:
   /**
    * Safety property
    */
-  trait Safety[S]:
+  sealed trait SafetyCheck[S]:
     def isSafe(s: S): Boolean
 
-  trait MultiSetSafety[T] extends Safety[MSet[T]]
+  private sealed trait MultiSetSafety[T] extends SafetyCheck[MSet[T]]
 
   /** Readers and Writers Mutual Exclusion
    * It is not possible to have readers and writers at the same time.
@@ -30,5 +30,5 @@ object SafetyProperties:
     override def isSafe(s: MSet[T]): Boolean = s(state) <= maxTokens
 
 
-  def bounded[T](state: T, maxTokens: Int): MultiSetSafety[T] = Bounded[T](state, maxTokens)
-  def mutualExclusion[T](regions: Seq[MSet[T]]): MultiSetSafety[T] = MutualExclusion[T](regions)
+  def bounded[T](state: T, maxTokens: Int): SafetyCheck[MSet[T]] = Bounded[T](state, maxTokens)
+  def mutualExclusion[T](regions: Seq[MSet[T]]): SafetyCheck[MSet[T]] = MutualExclusion[T](regions)
