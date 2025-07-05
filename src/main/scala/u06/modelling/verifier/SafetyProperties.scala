@@ -11,7 +11,7 @@ object SafetyProperties:
    * Safety property
    */
   sealed trait SafetyCheck[S]:
-    def isSafe(s: S): Boolean
+    def isSafe(state: S): Boolean
 
   private sealed trait MultiSetSafety[T] extends SafetyCheck[MSet[T]]
 
@@ -19,15 +19,15 @@ object SafetyProperties:
    * It is not possible to have readers and writers at the same time.
    */
   private case class MutualExclusion[T](private val combinations: Seq[MSet[T]]) extends MultiSetSafety[T]:
-    override def isSafe(s: MSet[T]): Boolean =
-      val currentState: Map[T, Int] = s.asMap
+    override def isSafe(state: MSet[T]): Boolean =
+      val currentState: Map[T, Int] = state.asMap
       !(combinations exists (mset => mset.asMap.keys.forall(k => currentState.getOrElse(k, 0) > 0)))
 
   /** Bounded
    * A place has at most maxTokens tokens.
    */
-  private case class Bounded[T](private val state: T, private val maxTokens: Int) extends MultiSetSafety[T]:
-    override def isSafe(s: MSet[T]): Boolean = s(state) <= maxTokens
+  private case class Bounded[T](private val stateToCheck: T, private val maxTokens: Int) extends MultiSetSafety[T]:
+    override def isSafe(state: MSet[T]): Boolean = state(stateToCheck) <= maxTokens
 
 
   def bounded[T](state: T, maxTokens: Int): SafetyCheck[MSet[T]] = Bounded[T](state, maxTokens)
