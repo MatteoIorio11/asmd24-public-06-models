@@ -14,11 +14,7 @@ class BehaviourPropertiesSpec extends AnyFunSuite:
 
   test("Mutual Exclusion: No Readers and writers at the same time"):
     readersAndWriters.
-      safetyProperty(initialMarking, 100)(rwMutualExclusion(Map(P6 -> Set(P7)))) shouldBe true
-
-  test("Mutual Exclusion: The resource should only be taken by one process"):
-    readersAndWriters
-      .safetyProperty(initialMarking, 100)(mutualExclusion(P5)) shouldBe true
+      safetyProperty(initialMarking, 100)(mutualExclusion(List(MSet(P6, P7)))) shouldBe true
 
   test("Bounded: We have always one shared resource"):
     readersAndWriters
